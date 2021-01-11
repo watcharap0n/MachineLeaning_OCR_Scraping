@@ -3,6 +3,7 @@
 Computer Engineering AI Developer (Machine Learning)
 - WebDeveloperment (FullStack) FrontEnd Vue.js BackEnd Flask
 - firebase, MongoDB, SQLite
+- LINEBOT, MessagerBOT, WEBBOT
 - IoT MQTT
 
 Main Point Success
