@@ -1,0 +1,5 @@
+venv
+config/chromedriver
+config/db_firebase.json
+.idea
+log.json
