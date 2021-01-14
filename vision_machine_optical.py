@@ -2,9 +2,12 @@ import os
 import io
 from google.cloud import vision
 import numpy as np
+import pandas as pd
 from PIL import Image
 import pytesseract
 import cv2
+from matplotlib import pyplot as plt
+from matplotlib import patches as pch
 
 
 class VisionOCR:
@@ -23,7 +26,34 @@ class VisionOCR:
         for label in labels:
             print(label.description)
 
+    def document_spilt_text(self):
+        client = vision.ImageAnnotatorClient()
+        with io.open(self.image, 'rb') as file:
+            content = file.read()
+        image = vision.Image(content=content)
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+        lst = []
+        for i in texts:
+            text = str(i.description).split()
+            lst.append(text)
+        print(lst)
+        ocr = ''.join(lst[0])
+        return ocr
+
     def document_google(self):
+        client = vision.ImageAnnotatorClient()
+        with io.open(self.image, 'rb') as image_file:
+            content = image_file.read()
+        image = vision.Image(content=content)
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+        txt = ''
+        for text in texts:
+            txt += text.description
+        return txt
+
+    def document_google_plot(self):
         client = vision.ImageAnnotatorClient()
         with io.open(self.image, 'rb') as image_file:
             content = image_file.read()
@@ -33,18 +63,70 @@ class VisionOCR:
         x_axis = []
         y_axis = []
         txt = ''
+        a = plt.imread(self.image)
+        fig, ax = plt.subplots(1)
+        ax.imshow(a)
+
         for text in texts:
             txt += text.description
             for vertex in text.bounding_poly.vertices:
                 x_axis.append(vertex.x)
                 y_axis.append(vertex.y)
-        return txt, x_axis, y_axis
+            vertices = ([(vertex.x, vertex.y)
+                         for vertex in text.bounding_poly.vertices])
+            X = vertices[0]
+            X1 = vertices[1]
+            Y = vertices[2]
+            rect = pch.Rectangle(X, (X1[0] - X[0]),
+                                 (Y[1] - X[1]), linewidth=1,
+                                 edgecolor='r', facecolor='none')
+            ax.add_patch(rect)
+        plt.show()
+        return txt
+
+    def document_pd(self):
+        client = vision.ImageAnnotatorClient()
+        with io.open(self.image, 'rb') as image_file:
+            content = image_file.read()
+        image = vision.Image(content=content)
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+
+        df = pd.DataFrame(columns=['locale', 'description'])
+        for text in texts:
+            df = df.append(
+                dict(
+                    locale=text.locale,
+                    description=text.description
+                ),
+                ignore_index=True
+            )
+            return df
+
+    def document_uri(self):
+        client = vision.ImageAnnotatorClient()
+        image = vision.Image()
+        image.source.image_uri = self.image
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+
+        df = pd.DataFrame(columns=['locale', 'description'])
+        for text in texts:
+            df = df.append(
+                dict(
+                    locale=text.locale,
+                    description=text.description
+                ),
+                ignore_index=True
+            )
+            return df
 
     def document_tesseract(self):
         text_classifier = pytesseract.image_to_string(Image.open(self.image), lang='tha')
         image = cv2.imread(self.image)
         scale = 0.5
         img_convert = cv2.resize(image, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
-        cv2.imshow('img', img_convert)
+        img = cv2.threshold(img_convert, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        cv2.imshow('img', img)
         cv2.waitKey(3)
         return text_classifier

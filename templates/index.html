@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <div class="text-center">
+            <form method="POST" enctype=multipart/form-data>
+                <div class="mb-3">
+                    <label for="formFileSm" class="form-label">Input File To OCR</label>
+                    <input class="form-control form-control-sm" name="formFile" id="formFileSm" type="file">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-info">Submit</button>
+            </form>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+

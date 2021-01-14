@@ -1,10 +1,13 @@
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template, url_for, redirect
 from linebot import LineBotApi, WebhookHandler
 import json
+import os
+import requests
 import pyrebase
 import pandas as pd
+from random import randrange
 from linebot.exceptions import LineBotApiError, InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, StickerSendMessage
 from rpa_selenium_scraping import WebScraping
 from vision_machine_optical import VisionOCR
 
@@ -20,7 +23,7 @@ with open('config/db_firebase.json', encoding='utf8') as config_file:
 
 
 def log_line(val):
-    with open('log.json', 'w') as log_line:
+    with open('config/log.json', 'w') as log_line:
         json.dump(val, log_line)
 
 
@@ -32,7 +35,7 @@ def no_event(decoded):
 
 
 def cryptocurrency_scrap():
-    my_scrap = WebScraping('config/chromedriver')
+    my_scrap = WebScraping('config/msedgedriver.exe')
     result = my_scrap.dynamic_scraping(
         uri='https://www.bitkub.com',
         html='table',
@@ -42,7 +45,7 @@ def cryptocurrency_scrap():
     )
     dfs = pd.read_html(str(result))
     data = pd.DataFrame(dfs[0])
-    excel = pd.ExcelWriter('static/excells/CryptocurrencyPrices.xlsx', engine='xlsxwriter')
+    excel = pd.ExcelWriter('static/excel/CryptocurrencyPrices.xlsx', engine='xlsxwriter')
     data.to_excel(excel, sheet_name='Sheet1')
     excel.save()
 
@@ -119,16 +122,17 @@ def webhook():
 def event_handler(event):
     _type = event['message']['type']
     if _type == 'sticker':
-        replyToken = event['replyToken']
-        userId = event['source']['userId']
-        line_bot_api.reply_message(replyToken, TextMessage(text='Please wait...'))
-        cryptocurrency_scrap()
-        url = 'https://dd0263ae5858.ngrok.io/static/CryptocurrencyPrices.xlsx'
-        line_bot_api.push_message(userId, TextMessage(text=url))
+        sticker_id = randrange(52002734, 52002773)
+        reply = event['replyToken']
+        sticker_message = StickerSendMessage(
+            package_id=str(11537),
+            sticker_id=str(sticker_id)
+        )
+        line_bot_api.reply_message(reply, sticker_message)
     elif _type == 'image':
         img_id = event['message']['id']
         img_id = line_bot_api.get_message_content(img_id)
-        with open('static/user_pic.png', 'wb') as fd:
+        with open('static/images/chuck.jpeg', 'wb') as fd:
             for chunk in img_id.iter_content():
                 fd.write(chunk)
         replyToken = event['replyToken']
@@ -136,10 +140,10 @@ def event_handler(event):
         message = db.child('message_user').get()
         message_idx = [x.val() for x in message.each() if x.val()['user_id'] == userId]
         if message_idx[-1]['message'] == 'แปลงรูปภาพ':
-            ocr = VisionOCR('static/user_pic.png')
+            ocr = VisionOCR('static/images/chuck.jpeg')
             line_bot_api.reply_message(replyToken, TextSendMessage(text='กรุณารอสักครู่นะค่ะกำลังเข้าสู่กระบวนการ...'))
             text = ocr.document_google()
-            line_bot_api.push_message(userId, TextSendMessage(text=text[0]))
+            line_bot_api.push_message(userId, TextSendMessage(text=text))
         else:
             line_bot_api.reply_message(replyToken, TextMessage(text='รูปสวยดี'))
 
@@ -149,10 +153,62 @@ def handle_message(event):
     handle = event_handle_add()
     handle = handle['events'][0]
     message = handle['message']['text']
+    userId = handle['source']['userId']
     if message == 'แปลงรูปภาพ':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='ทำการใส่รูปมาได้เลยค่ะ...'))
-    else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='อื่นๆ...'))
+    elif message == 'scraping':
+        line_bot_api.reply_message(event.reply_token, TextMessage(text='เรากำลังทำการไปดึงข้อมูล...'))
+        cryptocurrency_scrap()
+        url = 'https://81f3972b8670.ngrok.io/static/excel/CryptocurrencyPrices.xlsx'
+        line_bot_api.push_message(userId, TextMessage(text=url))
+
+
+form_ocr = []
+
+
+@app.route('/')
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method == 'POST':
+        file_input = request.files['formFile']
+        uploads_dir = os.path.join(app.instance_path, 'uploads')
+        file_input.save(os.path.join(uploads_dir, file_input.filename))
+        ocr = VisionOCR(f'instance/uploads/{file_input.filename}')
+        text = ocr.document_google()
+        form_ocr.append({'ocr': text})
+    return redirect(url_for('formOCR'))
+
+
+@app.route('/formOCR')
+def formOCR():
+    print(form_ocr)
+    return render_template('form.html', data=form_ocr)
+
+
+@app.route('/ministry')
+def ministry():
+    return render_template('ministry.html')
+
+
+@app.route('/data_ministry', methods=['POST'])
+def data_ministry():
+    req = dict(request.get_json())
+    print(req)
+    keyword = req['keyword']
+    revision = req['revision']
+    imex_type = req['imex_type']
+    order_by = req['order_by']
+    url = f"https://dataapi.moc.go.th/products?keyword={keyword}&revision={revision}&imex_type={imex_type}&order_by={order_by}"
+    response = requests.get(url, verify=False)
+    texts = response.json()
+    lst = []
+    for i in texts:
+        group = {'com_code': i['com_code'], 'hs_description_th': i['hs_description_th'],
+                 'com_description_th': i['com_description_th']}
+        lst.append(group)
+    return jsonify({'ministry': lst})
 
 
 if __name__ == '__main__':
