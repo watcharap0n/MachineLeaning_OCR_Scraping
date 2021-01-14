@@ -195,7 +195,6 @@ def ministry():
 @app.route('/data_ministry', methods=['POST'])
 def data_ministry():
     req = dict(request.get_json())
-    print(req)
     keyword = req['keyword']
     revision = req['revision']
     imex_type = req['imex_type']
@@ -209,6 +208,37 @@ def data_ministry():
                  'com_description_th': i['com_description_th']}
         lst.append(group)
     return jsonify({'ministry': lst})
+
+
+@app.route('/bitkub')
+def bitkub():
+    return render_template('bitkub.html')
+
+
+@app.route('/data_bitkub')
+def data_bitkub():
+    lst = []
+    content = WebScraping('config/chromedriver')
+    content = content.dynamic_scraping('https://www.bitkub.com', 'table', 'class',
+                                       'deposit__table-wrapper dashboard__table', 1)
+    dfs = pd.read_html(str(content))
+    dataframe = pd.DataFrame(dfs[0])
+    bitkub = dataframe.to_dict()
+    bitkub['coin'] = bitkub.pop('สกุลเงิน')
+    bitkub['price_last'] = bitkub.pop('ราคาล่าสุด (THB)')
+    bitkub['buy_sell'] = bitkub.pop('ซื้อขาย/ วัน')
+    bitkub['peak'] = bitkub.pop('สูงสุด/วัน (THB)')
+    bitkub['lower'] = bitkub.pop('ต่ำสุด/วัน (THB)')
+    coin = bitkub['coin']
+    price = bitkub['price_last']
+    buy_sell = bitkub['buy_sell']
+    peak = bitkub['peak']
+    lower = bitkub['lower']
+    len_coin = len(coin)
+    for i in range(0, len_coin):
+        group = {'coin': coin[i], 'price_last': price[i], 'buy_sell': buy_sell[i], 'peak': peak[i], 'lower': lower[i]}
+        lst.append(group)
+    return jsonify({'bitkub': lst})
 
 
 if __name__ == '__main__':
