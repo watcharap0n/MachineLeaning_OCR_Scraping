@@ -83,6 +83,7 @@
                         </v-card>
                     </v-dialog>
                     <v-data-table
+                            :hidden="!hiddenTable"
                             :headers="headers"
                             :items="ministries"
                             :items-per-page="10"
@@ -121,7 +122,8 @@
                     orders: ['hs_code', 'com_code'],
                     items: ['import', 'export'],
                     ministries: [],
-                    dialog: true
+                    dialog: true,
+                    hiddenTable: false,
                 }
             },
             methods: {
@@ -134,6 +136,7 @@
                     axios.post(path, data)
                         .then((res) => {
                             let data = this.ministries = res.data.ministry;
+                            this.hiddenTable = true;
                             console.log(data)
                         })
                         .catch((err) => {

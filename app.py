@@ -218,7 +218,7 @@ def bitkub():
 @app.route('/data_bitkub')
 def data_bitkub():
     lst = []
-    content = WebScraping('config/chromedriver')
+    content = WebScraping('config/msedgedriver.exe')
     content = content.dynamic_scraping('https://www.bitkub.com', 'table', 'class',
                                        'deposit__table-wrapper dashboard__table', 1)
     dfs = pd.read_html(str(content))
@@ -239,6 +239,65 @@ def data_bitkub():
         group = {'coin': coin[i], 'price_last': price[i], 'buy_sell': buy_sell[i], 'peak': peak[i], 'lower': lower[i]}
         lst.append(group)
     return jsonify({'bitkub': lst})
+
+
+@app.route('/dbd')
+def dbd():
+    return render_template('dbd.html')
+
+
+@app.route('/data_dbd', methods=['GET', 'POST'])
+def data_dbd():
+    if request.method == 'POST':
+        lst = []
+        req = request.get_json()
+        rpa = WebScraping('config/msedgedriver.exe')
+        tax_id = req['push_tax']
+        url = 'https://datawarehouse.dbd.go.th/'
+        content = rpa.table_index(tax_id=tax_id, url=url)
+        dfs = pd.read_html(str(content))
+        dataframe = pd.DataFrame(dfs[0])
+        dbd = dataframe.to_dict()
+        dbd['index'] = dbd.pop('ลำดับ')
+        dbd['tax_id'] = dbd.pop('เลขทะเบียนนิติบุคคล')
+        dbd['fname'] = dbd.pop('ชื่อนิติบุคคล')
+        dbd['type_person'] = dbd.pop('ประเภทนิติบุคคล')
+        dbd['status'] = dbd.pop('สถานะ')
+        dbd['bus_id'] = dbd.pop('รหัสประเภทธุรกิจ')
+        dbd['bus_name'] = dbd.pop('ชื่อประเภทธุรกิจ')
+        dbd['city'] = dbd.pop('จังหวัด')
+        dbd['authorized'] = dbd.pop('ทุนจดทะเบียน (บาท)')
+        dbd['credit'] = dbd.pop('รายได้รวม (บาท)')
+        dbd['profit'] = dbd.pop("กำไร (ขาดทุน) สุทธิ (บาท)")
+        dbd['keep_profit'] = dbd.pop('สินทรัพย์รวม (บาท)')
+        dbd['prices'] = dbd.pop('ส่วนของผู้ถือหุ้น (บาท)')
+        index = dbd['index']
+        tax_id = dbd['tax_id']
+        fname = dbd['fname']
+        type_person = dbd['type_person']
+        status = dbd['status']
+        bus_id = dbd['bus_id']
+        bus_name = dbd['bus_name']
+        city = dbd['city']
+        authorized = dbd['authorized']
+        credit = dbd['credit']
+        profit = dbd['profit']
+        keep_profit = dbd['keep_profit']
+        prices = dbd['prices']
+        len_index = len(index)
+        for i in range(0, len_index):
+            group = {
+                'index': index[i], 'tax_id': tax_id[i], 'fname': fname[i], 'type_person': type_person[i],
+                'status': status[i], 'bus_id': bus_id[i], 'bus_name': bus_name, 'city': city[i],
+                'authorized': authorized[i], 'credit': credit[i], 'profit': profit[i],
+                'keep_profit': keep_profit[i], 'prices': prices[i]
+            }
+            lst.append(group)
+        return jsonify({'dbd': lst})
+
+
+
+
 
 
 if __name__ == '__main__':
