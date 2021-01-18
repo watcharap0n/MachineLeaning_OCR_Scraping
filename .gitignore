@@ -4,3 +4,4 @@ config/db_firebase.json
 .idea
 config
 log.json
+ngrok.exe
