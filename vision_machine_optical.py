@@ -175,10 +175,25 @@ def edu_numpy():
     c = np.identity(3, dtype='int')
     d = np.eye(3, 5)
 
+
 def dimention_img():
-    img = np.zeros((512, 512, 3), np.uint8) # height, width
-    cv2.rectangle(img, (0, 0), (250, 350), (0, 0, 255), 3) # width height
+    img = np.zeros((512, 512, 3), np.uint8)  # height, width
+    cv2.rectangle(img, (0, 0), (250, 350), (0, 0, 255), 3)  # width height
     cv2.line(img, (0, 0), (img.shape[1], img.shape[0]), (0, 255, 0), 3)
     cv2.circle(img, (400, 50), 30, (255, 0, 0), 3)
     cv2.imshow('image', img)
+    cv2.waitKey(0)
+
+
+def rectangle_document():
+    ocr = VisionOCR('static/images/chuck.jpeg')
+    ocr = ocr.document_pandas()
+    ocr = ocr.to_dict()
+
+    left, top = ocr['vertextX'][0]
+    right, bottom = ocr['vertextY'][0]
+    image = cv2.imread('static/images/chuck.jpeg')
+    cv2.putText(image, 'Hello', (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, .7, (0, 0, 255), 1)
+    cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 3)
+    cv2.imshow('img', image)
     cv2.waitKey(0)
