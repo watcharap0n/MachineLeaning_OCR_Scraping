@@ -866,7 +866,7 @@ files:
     - file-audio
     - file-code
     - file-excel
-    - file-image
+    - file-images
     - file-pdf
     - file-powerpoint
     - file-video
@@ -1180,11 +1180,11 @@ images:
     - eye
     - eye-dropper
     - eye-slash
-    - file-image
+    - file-images
     - film
     - id-badge
     - id-card
-    - image
+    - images
     - images
     - photo-video
     - portrait
@@ -1422,7 +1422,7 @@ maps:
     - helicopter
     - home
     - hospital
-    - image
+    - images
     - images
     - industry
     - info
@@ -1778,7 +1778,7 @@ objects:
     - hospital
     - hourglass
     - igloo
-    - image
+    - images
     - images
     - industry
     - key
@@ -2156,7 +2156,7 @@ social:
     - hashtag
     - heart
     - icons
-    - image
+    - images
     - images
     - map-marker
     - map-marker-alt

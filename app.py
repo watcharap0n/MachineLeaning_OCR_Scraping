@@ -129,7 +129,7 @@ def event_handler(event):
             sticker_id=str(sticker_id)
         )
         line_bot_api.reply_message(reply, sticker_message)
-    elif _type == 'image':
+    elif _type == 'images':
         img_id = event['message']['id']
         img_id = line_bot_api.get_message_content(img_id)
         with open('static/images/chuck.jpeg', 'wb') as fd:

@@ -437,7 +437,7 @@ class Pidie {
   }
   parallax() {
     Array.prototype.forEach.call(document.querySelectorAll('.pd-parallax'), function(elem){
-      elem.style.backgroundImage = 'url('+elem.getAttribute('data-parallax-image')+')';
+      elem.style.backgroundImage = 'url('+elem.getAttribute('data-parallax-images')+')';
     })
   }
 
@@ -499,29 +499,29 @@ class Pidie {
     });
   }
   productImage() {
-    var wrapImageProduct = document.querySelector('.pd-product-image');
-    var sliderImageProduct = document.querySelector('.pd-product-image-slider');
+    var wrapImageProduct = document.querySelector('.pd-product-images');
+    var sliderImageProduct = document.querySelector('.pd-product-images-slider');
     var pagiImageProduct = document.createElement('div');
-    pagiImageProduct.classList.add('pd-product-image-pagination');
+    pagiImageProduct.classList.add('pd-product-images-pagination');
     wrapImageProduct.appendChild(pagiImageProduct);
     var pagiItem = '';
     for(var i = 0; i < 4; i++){
-      pagiItem += '<img src="'+sliderImageProduct.getElementsByClassName('pd-product-image-slide')[i].getAttribute('src')+'" data-product-image="'+i+'" width="100" height="80"/>';
+      pagiItem += '<img src="'+sliderImageProduct.getElementsByClassName('pd-product-image-slide')[i].getAttribute('src')+'" data-product-images="'+i+'" width="100" height="80"/>';
     }
     pagiImageProduct.innerHTML = pagiItem;
-    Array.prototype.forEach.call(document.querySelectorAll('.pd-product-image-pagination img'), function(elem){
+    Array.prototype.forEach.call(document.querySelectorAll('.pd-product-images-pagination img'), function(elem){
       elem.onclick = function(e){
         e.preventDefault();
         for(var j = 0; j < 4; j++){
-          sliderImageProduct.getElementsByClassName('pd-product-image-slide')[j].classList.remove('pd-product-image-active');
+          sliderImageProduct.getElementsByClassName('pd-product-image-slide')[j].classList.remove('pd-product-images-active');
         }
-        var no = elem.getAttribute('data-product-image');
-        sliderImageProduct.getElementsByClassName('pd-product-image-slide')[no].classList.add('pd-product-image-active');
+        var no = elem.getAttribute('data-product-images');
+        sliderImageProduct.getElementsByClassName('pd-product-image-slide')[no].classList.add('pd-product-images-active');
       }
     })
-    var zoomImageProduct = document.querySelector('.pd-product-image-active');
+    var zoomImageProduct = document.querySelector('.pd-product-images-active');
     var resultImageProduct = document.createElement('div');
-    resultImageProduct.classList.add('pd-product-image-zoom');
+    resultImageProduct.classList.add('pd-product-images-zoom');
     resultImageProduct.style.visibility = 'hidden';
     resultImageProduct.style.backgroundImage = "url('" + zoomImageProduct.src + "')";
     resultImageProduct.style.backgroundSize = (zoomImageProduct.width * 2) + "px " + (zoomImageProduct.height * 2) + "px";
@@ -564,7 +564,7 @@ class Pidie {
   }
   imageMagnifier(options = {}) {
     var settings = {
-      selector: options.el || '.pd-image-magnifier img',
+      selector: options.el || '.pd-images-magnifier img',
       zoom: options.zoom || 3,
       width: options.width || '150',
       height: options.height || '150'
@@ -572,7 +572,7 @@ class Pidie {
     var img, glass, w, h, bw;
     img = document.querySelector(settings.selector);
     glass = document.createElement("div");
-    glass.setAttribute("class", "pd-image-magnifier-glass");
+    glass.setAttribute("class", "pd-images-magnifier-glass");
     glass.style.visibility = 'hidden';
     glass.style.width = settings.width + 'px';
     glass.style.height = settings.height + 'px';
@@ -620,10 +620,10 @@ class Pidie {
   }
   imageZoom() {
     var img, lens, result, cx, cy;
-    img = document.querySelector('.pd-image-zoom-content');
-    result = document.querySelector('.pd-image-zoom-preview');
+    img = document.querySelector('.pd-images-zoom-content');
+    result = document.querySelector('.pd-images-zoom-preview');
     lens = document.createElement("div");
-    lens.setAttribute("class", "pd-image-zoom-lens");
+    lens.setAttribute("class", "pd-images-zoom-lens");
     lens.style.visibility = 'hidden';
     img.parentElement.insertBefore(lens, img);
     cx = result.offsetWidth / lens.offsetWidth;
@@ -688,11 +688,11 @@ class Pidie {
       var slider, img, clicked = 0, w, h;
       w = img.offsetWidth;
       h = img.offsetHeight;
-      document.querySelector('.pd-image-comparison').style.height = h + 'px';
+      document.querySelector('.pd-images-comparison').style.height = h + 'px';
       img.style.width = (w / 2) + "px";
       slider = document.createElement("div");
-      slider.innerHTML = '<span class="pd-image-compare-icon">&#10094; &#10095;<span>';
-      slider.setAttribute("class", "pd-image-compare-slider");
+      slider.innerHTML = '<span class="pd-images-compare-icon">&#10094; &#10095;<span>';
+      slider.setAttribute("class", "pd-images-compare-slider");
       img.parentElement.insertBefore(slider, img);
       slider.style.top = (h / 2) - (slider.offsetHeight / 2) + "px";
       slider.style.left = (w / 2) - (slider.offsetWidth / 2) + "px";
@@ -1045,7 +1045,7 @@ class Pidie {
       if(datalightbox != Number(lightLength)){
         lightboxContent += '<div class="pd-lightbox-next">&rsaquo;</div>';
       }
-      lightboxContent += '<div class="pd-lightbox-image"><img src="'+datasrc+'" height="400"/></div>';
+      lightboxContent += '<div class="pd-lightbox-images"><img src="'+datasrc+'" height="400"/></div>';
       lightboxContent += '<div class="pd-lightbox-thumbnail"></div>';
       lightboxPage.innerHTML = lightboxContent;
       var lightboxThumbnail = lightboxPage.querySelector('.pd-lightbox-thumbnail');

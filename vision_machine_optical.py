@@ -181,7 +181,7 @@ def dimention_img():
     cv2.rectangle(img, (0, 0), (250, 350), (0, 0, 255), 3)  # width height
     cv2.line(img, (0, 0), (img.shape[1], img.shape[0]), (0, 255, 0), 3)
     cv2.circle(img, (400, 50), 30, (255, 0, 0), 3)
-    cv2.imshow('image', img)
+    cv2.imshow('images', img)
     cv2.waitKey(0)
 
 
@@ -196,7 +196,7 @@ def rectangle_document(path):
         left, top = ocr['vertextX'][i]
         right, bottom = ocr['vertextY'][i]
         # description = ocr['description'][i]
-        # cv2.putText(image, description, (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, .7, (0, 0, 255), 1)
+        # cv2.putText(images, description, (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, .7, (0, 0, 255), 1)
         cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 3)
 
     left, top = ocr['vertextX'][0]

@@ -546,7 +546,7 @@ class Iti {
       if (window.intlTelInputGlobals.windowLoaded) {
         window.intlTelInputGlobals.loadUtils(this.options.utilsScript);
       } else {
-        // wait until the load event so we don't block any other requests e.g. the flags image
+        // wait until the load event so we don't block any other requests e.g. the flags images
         window.addEventListener('load', () => {
           window.intlTelInputGlobals.loadUtils(this.options.utilsScript);
         });

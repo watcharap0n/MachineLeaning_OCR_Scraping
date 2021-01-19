@@ -3616,7 +3616,7 @@ function unlistenArrayEvents(array, listener) {
 	delete array._chartjs;
 }
 
-// Base class for all dataset controllers (line, bar, etc)
+// Base class for all datasets controllers (line, bar, etc)
 var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
 };
@@ -3624,7 +3624,7 @@ var DatasetController = function(chart, datasetIndex) {
 helpers$1.extend(DatasetController.prototype, {
 
 	/**
-	 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
+	 * Element type used to generate a meta datasets (e.g. Chart.element.Line).
 	 * @type {Chart.core.element}
 	 */
 	datasetElementType: null,
@@ -3811,7 +3811,7 @@ helpers$1.extend(DatasetController.prototype, {
 	},
 
 	/**
-	 * Returns the merged user-supplied and default dataset-level options
+	 * Returns the merged user-supplied and default datasets-level options
 	 * @private
 	 */
 	_configure: function() {
@@ -3868,7 +3868,7 @@ helpers$1.extend(DatasetController.prototype, {
 	},
 
 	/**
-	 * Returns a set of predefined style properties that should be used to represent the dataset
+	 * Returns a set of predefined style properties that should be used to represent the datasets
 	 * or the data if the index is specified
 	 * @param {number} index - data index
 	 * @return {IStyleInterface} style object
@@ -4881,11 +4881,11 @@ var controller_bar = core_datasetController.extend({
 		meta.bar = true;
 
 		scaleOpts = me._getIndexScale().options;
-		deprecated('bar chart', scaleOpts.barPercentage, 'scales.[x/y]Axes.barPercentage', 'dataset.barPercentage');
-		deprecated('bar chart', scaleOpts.barThickness, 'scales.[x/y]Axes.barThickness', 'dataset.barThickness');
-		deprecated('bar chart', scaleOpts.categoryPercentage, 'scales.[x/y]Axes.categoryPercentage', 'dataset.categoryPercentage');
-		deprecated('bar chart', me._getValueScale().options.minBarLength, 'scales.[x/y]Axes.minBarLength', 'dataset.minBarLength');
-		deprecated('bar chart', scaleOpts.maxBarThickness, 'scales.[x/y]Axes.maxBarThickness', 'dataset.maxBarThickness');
+		deprecated('bar chart', scaleOpts.barPercentage, 'scales.[x/y]Axes.barPercentage', 'datasets.barPercentage');
+		deprecated('bar chart', scaleOpts.barThickness, 'scales.[x/y]Axes.barThickness', 'datasets.barThickness');
+		deprecated('bar chart', scaleOpts.categoryPercentage, 'scales.[x/y]Axes.categoryPercentage', 'datasets.categoryPercentage');
+		deprecated('bar chart', me._getValueScale().options.minBarLength, 'scales.[x/y]Axes.minBarLength', 'datasets.minBarLength');
+		deprecated('bar chart', scaleOpts.maxBarThickness, 'scales.[x/y]Axes.maxBarThickness', 'datasets.maxBarThickness');
 	},
 
 	update: function(reset) {
@@ -4951,7 +4951,7 @@ var controller_bar = core_datasetController.extend({
 
 	/**
 	 * Returns the stacks based on groups and bar visibility.
-	 * @param {number} [last] - The dataset index
+	 * @param {number} [last] - The datasets index
 	 * @returns {string[]} The list of stack IDs
 	 * @private
 	 */
@@ -4992,8 +4992,8 @@ var controller_bar = core_datasetController.extend({
 	},
 
 	/**
-	 * Returns the stack index for the given dataset based on groups and bar visibility.
-	 * @param {number} [datasetIndex] - The dataset index
+	 * Returns the stack index for the given datasets based on groups and bar visibility.
+	 * @param {number} [datasetIndex] - The datasets index
 	 * @param {string} [name] - The stack name to find
 	 * @returns {number} The stack index
 	 * @private
@@ -5453,7 +5453,7 @@ var controller_doughnut = core_datasetController.extend({
 		'hoverBorderWidth',
 	],
 
-	// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
+	// Get index of the datasets in relation to the visible datasets. This allows determining the inner and outer radius correctly
 	getRingIndex: function(datasetIndex) {
 		var ringIndex = 0;
 
@@ -5618,7 +5618,7 @@ var controller_doughnut = core_datasetController.extend({
 		var i, ilen, meta, arc, controller, options, borderWidth, hoverWidth;
 
 		if (!arcs) {
-			// Find the outmost visible dataset
+			// Find the outmost visible datasets
 			for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 				if (chart.isDatasetVisible(i)) {
 					meta = chart.getDatasetMeta(i);
@@ -5674,7 +5674,7 @@ var controller_doughnut = core_datasetController.extend({
 	},
 
 	/**
-	 * Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
+	 * Get radius length offset of the datasets in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
 	 * @private
 	 */
 	_getRingWeightOffset: function(datasetIndex) {
@@ -6547,7 +6547,7 @@ var controller_radar = core_datasetController.extend({
 
 		// Desired view properties
 		point._model = {
-			x: x, // value not used in dataset scale, but we want a consistent API between scales
+			x: x, // value not used in datasets scale, but we want a consistent API between scales
 			y: y,
 			skip: custom.skip || isNaN(x) || isNaN(y),
 			// Appearance
@@ -6867,9 +6867,9 @@ var core_interaction = {
 		index: indexMode,
 
 		/**
-		 * Returns items in the same dataset. If the options.intersect parameter is true, we only return items if we intersect something
-		 * If the options.intersect is false, we find the nearest item and return the items in that dataset
-		 * @function Chart.Interaction.modes.dataset
+		 * Returns items in the same datasets. If the options.intersect parameter is true, we only return items if we intersect something
+		 * If the options.intersect is false, we find the nearest item and return the items in that datasets
+		 * @function Chart.Interaction.modes.datasets
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
 		 * @param {IInteractionOptions} options - options to use during interaction
@@ -9626,10 +9626,10 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		// In case the entire data object changed
 		me.tooltip._data = me.data;
 
-		// Make sure dataset controllers are updated and new controllers are reset
+		// Make sure datasets controllers are updated and new controllers are reset
 		var newControllers = me.buildOrUpdateControllers();
 
-		// Make sure all dataset controllers have correct meta data counts
+		// Make sure all datasets controllers have correct meta data counts
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
 			me.getDatasetMeta(i).controller.buildOrUpdateElements();
 		}
@@ -9728,7 +9728,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
-	 * Updates dataset at index unless a plugin returns `false` to the `beforeDatasetUpdate`
+	 * Updates datasets at index unless a plugin returns `false` to the `beforeDatasetUpdate`
 	 * hook, in which case, plugins will not be called on `afterDatasetUpdate`.
 	 * @private
 	 */
@@ -9905,7 +9905,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
-	 * Draws dataset at index unless a plugin returns `false` to the `beforeDatasetDraw`
+	 * Draws datasets at index unless a plugin returns `false` to the `beforeDatasetDraw`
 	 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
 	 * @private
 	 */
@@ -9950,7 +9950,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 
 	/**
 	 * Get the single element that was clicked on
-	 * @return An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
+	 * @return An object containing the datasets index and element index of the matching element. Also contains the rectangle that was draw
 	 */
 	getElementAtEvent: function(e) {
 		return core_interaction.modes.single(this, e);
@@ -10015,8 +10015,8 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	isDatasetVisible: function(datasetIndex) {
 		var meta = this.getDatasetMeta(datasetIndex);
 
-		// meta.hidden is a per chart dataset hidden flag override with 3 states: if true or false,
-		// the dataset.hidden value is ignored, else if null, the dataset hidden state is returned.
+		// meta.hidden is a per chart datasets hidden flag override with 3 states: if true or false,
+		// the datasets.hidden value is ignored, else if null, the datasets hidden state is returned.
 		return typeof meta.hidden === 'boolean' ? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 	},
 
@@ -10045,7 +10045,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 
 		me.stop();
 
-		// dataset controllers need to cleanup associated data
+		// datasets controllers need to cleanup associated data
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
 			me.destroyDatasetMeta(i);
 		}
@@ -10488,7 +10488,7 @@ var core_helpers = function() {
 	helpers$1.splineCurveMonotone = function(points) {
 		// This function calculates Bézier control points in a similar way than |splineCurve|,
 		// but preserves monotonicity of the provided data and ensures no local extremums are added
-		// between the dataset discrete points due to the interpolation.
+		// between the datasets discrete points due to the interpolation.
 		// See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
 
 		var pointsWithTangents = (points || []).map(function(point) {
@@ -12106,7 +12106,7 @@ var Scale = core_element.extend({
 			return !!display;
 		}
 
-		// When 'auto', the scale is visible if at least one associated dataset is visible.
+		// When 'auto', the scale is visible if at least one associated datasets is visible.
 		for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 			if (chart.isDatasetVisible(i)) {
 				meta = chart.getDatasetMeta(i);
@@ -19747,7 +19747,7 @@ core_defaults._set('global', {
 			// See controller.isDatasetVisible comment
 			meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
 
-			// We hid a dataset ... rerender the chart
+			// We hid a datasets ... rerender the chart
 			ci.update();
 		},
 
@@ -19838,7 +19838,7 @@ var Legend = core_element.extend({
 		var me = this;
 		helpers$1.extend(me, config);
 
-		// Contains hit boxes for each dataset (in dataset order)
+		// Contains hit boxes for each datasets (in datasets order)
 		me.legendHitBoxes = [];
 
 		/**
@@ -20233,7 +20233,7 @@ var Legend = core_element.extend({
 		var i, hitBox, lh;
 
 		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
-			// See if we are touching one of the dataset boxes
+			// See if we are touching one of the datasets boxes
 			lh = me.legendHitBoxes;
 			for (i = 0; i < lh.length; ++i) {
 				hitBox = lh[i];
@@ -20376,7 +20376,7 @@ var Title = core_element.extend({
 		var me = this;
 		helpers$1.extend(me, config);
 
-		// Contains hit boxes for each dataset (in dataset order)
+		// Contains hit boxes for each datasets (in datasets order)
 		me.legendHitBoxes = [];
 	},
 

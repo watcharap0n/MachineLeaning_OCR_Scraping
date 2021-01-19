@@ -49,8 +49,8 @@
     // // Listen to 'order placed' event
     // var order = document.getElementById('order-count')
     // orderChannel.bind('place', function(data) {
-    //   myLineChart.data.datasets.forEach((dataset) => {
-    //       dataset.data.fill(parseInt(data.units),-1);
+    //   myLineChart.data.datasets.forEach((datasets) => {
+    //       datasets.data.fill(parseInt(data.units),-1);
     //   });
     //   myLineChart.update();
     //   order.innerText = parseInt(order.innerText)+1
