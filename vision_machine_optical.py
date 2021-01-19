@@ -185,15 +185,31 @@ def dimention_img():
     cv2.waitKey(0)
 
 
-def rectangle_document():
-    ocr = VisionOCR('static/images/chuck.jpeg')
+def rectangle_document(path):
+    path = path
+    ocr = VisionOCR(path)
     ocr = ocr.document_pandas()
     ocr = ocr.to_dict()
+    vert = len(ocr['vertextX'])
+    image = cv2.imread(path)
+    for i in range(0, vert):
+        left, top = ocr['vertextX'][i]
+        right, bottom = ocr['vertextY'][i]
+        # description = ocr['description'][i]
+        # cv2.putText(image, description, (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, .7, (0, 0, 255), 1)
+        cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 3)
 
     left, top = ocr['vertextX'][0]
     right, bottom = ocr['vertextY'][0]
-    image = cv2.imread('static/images/chuck.jpeg')
-    cv2.putText(image, 'Hello', (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, .7, (0, 0, 255), 1)
-    cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 3)
+    width, height = 250, 350
+    print(ocr['vertextX'][0], ocr['vertextY'][0])
+    pts1 = np.float32([[top, left], [left + bottom, top + right], [left - bottom, top - right], [bottom, right]])
+    pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
+    matrix = cv2.getPerspectiveTransform(pts1, pts2)
+    imgOutput = cv2.warpPerspective(image, matrix, (width, height))
+    cv2.imshow('output', imgOutput)
     cv2.imshow('img', image)
     cv2.waitKey(0)
+
+
+rectangle_document('static/images/paper.jpeg')
