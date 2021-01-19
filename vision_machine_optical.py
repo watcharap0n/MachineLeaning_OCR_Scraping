@@ -211,5 +211,3 @@ def rectangle_document(path):
     cv2.imshow('img', image)
     cv2.waitKey(0)
 
-
-rectangle_document('static/images/paper.jpeg')
