@@ -1,7 +1,10 @@
 import numpy as np
-from imutils import face_utils
 import cv2
+import os
 import dlib
+import time
+from imutils import face_utils
+from os import listdir
 
 face_rec = cv2.CascadeClassifier('model_image/haarcascade_frontalface_default.xml')
 detector = dlib.get_frontal_face_detector()
@@ -46,6 +49,7 @@ def face_img(file_img):
 
 
 def face_video():
+    cap = cv2.VideoCapture('model_image/mindset.mp4')
     while True:
         ret, image = cap.read()
         scale = 0.5
@@ -78,5 +82,48 @@ def threshold():
             cv2.imshow('threshold', threshold)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+
+def dlib_image(file_image):
+    image = cv2.imread(file_image)
+    scale = 0.5
+    image = cv2.resize(image, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+    gray_scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    dets = detector(gray_scale, 1)
+    for i, rect in enumerate(dets):
+        x, y = rect.left(), rect.top()
+        w, h = rect.right(), rect.bottom()
+        shape = sp(image, rect)  # deep learning
+        shape = face_utils.shape_to_np(shape)
+        cv2.rectangle(image, (x, y), (w, h), (0, 255, 0), 3)
+        for (x, y) in shape:
+            cv2.circle(image, (x, y), 2, (0, 0, 255), -1)
+
+    cv2.imshow('image', image)
+    cv2.waitKey(0)
+
+
+def dlib_video(select):
+    cap = cv2.VideoCapture(select)
+    while True:
+        ret, image = cap.read()
+        scale = 0.5
+        image = cv2.resize(image, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+        gray_scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        dets = detector(gray_scale, 1)
+        for i, rect in enumerate(dets):
+            x, y = rect.left(), rect.top()
+            w, h = rect.right(), rect.bottom()
+            shape = sp(image, rect)  # deep learning
+            shape = face_utils.shape_to_np(shape)
+            cv2.rectangle(image, (x, y), (w, h), (0, 255, 0), 3)
+            write_image = image[y:h, x:w]
+            cv2.imwrite('face_dets.png', write_image)
+            for (x, y) in shape:
+                cv2.circle(image, (x, y), 2, (0, 0, 255), -1)
+        cv2.imshow('image', image)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
 
 

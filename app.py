@@ -3,6 +3,7 @@ from linebot import LineBotApi, WebhookHandler
 import json
 import os
 import requests
+from collections import OrderedDict
 import pyrebase
 import pandas as pd
 from random import randrange
@@ -166,19 +167,67 @@ def handle_message(event):
 form_ocr = []
 
 
-@app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
         return render_template('index.html')
     elif request.method == 'POST':
-        file_input = request.files['formFile']
+        file_input = request.files['file']
+        print(file_input)
         uploads_dir = os.path.join(app.instance_path, 'uploads')
         file_input.save(os.path.join(uploads_dir, file_input.filename))
         ocr = VisionOCR(f'instance/uploads/{file_input.filename}')
-        text = ocr.document_google()
-        form_ocr.append({'ocr': text})
-    return redirect(url_for('formOCR'))
+        ocr = ocr.document_pandas()
+        ocr = ocr.to_dict()
+        texts = ocr['description']
+        xy = ocr['vertextX']
+        range_text = len(texts)
+        embedding = []
+        for i in range(range_text)[1:]:
+            x, y = xy[i]
+            embedding.append(y)
+        cut_y = list(OrderedDict.fromkeys(embedding).keys())
+        results = []
+        for i in range(range_text)[1:]:
+            x, y = xy[i]
+            text = texts[i]
+            for e, idx in enumerate(cut_y):
+                if idx == y:
+                    dic = {e: text}
+                    results.append(dic)
+        vals = []
+        for i in results:
+            if i:
+                vals.append(i)
+        merged = {}
+        for k, d in enumerate(vals):
+            for j, v in d.items():
+                if j not in merged:
+                    merged[j] = []
+                merged[j].append(v)
+        merged['company'] = merged.pop(0)
+        merged['tax_id'] = merged.pop(10)
+        merged['pos_id'] = merged.pop(13)
+        merged['date'] = merged.pop(15)
+        merged['list_1'] = merged.pop(21)
+        merged['list_2'] = merged.pop(23)
+        merged['total_each'] = merged.pop(29)
+        merged['pro_1'] = merged.pop(30)
+        merged['pro_2'] = merged.pop(31)
+        merged['pro_3'] = merged.pop(32)
+        merged['price_1'] = merged.pop(33)
+        merged['price_2'] = merged.pop(34)
+        merged['credit'] = merged.pop(35)
+        merged['credit_price'] = merged.pop(36)
+        group = {
+            'company': ''.join(merged['company']), 'tax_id': ''.join(merged['tax_id']),
+            'pos_id': ''.join(merged['pos_id']), 'date': ''.join(merged['date']), 'list_1': ''.join(merged['list_1']),
+            'list_2': ''.join(merged['list_2']), 'total_each': ''.join(merged['total_each']),
+            'pro_1': ''.join(merged['pro_1']), 'pro_2': ''.join(merged['pro_2']), 'pro_3': ''.join(merged['pro_3']),
+            'price_1': ''.join(merged['price_1']), 'price_2': ''.join(merged['price_2']), 'credit': ''.join(merged['credit']),
+            'credit_price': ''.join(merged['credit_price'])
+        }
+        return jsonify({'form': group, 'texts': texts[0]})
 
 
 @app.route('/formOCR')
@@ -288,7 +337,7 @@ def data_dbd():
         for i in range(0, len_index):
             group = {
                 'index': index[i], 'tax_id': tax_id[i], 'fname': fname[i], 'type_person': type_person[i],
-                'status': status[i], 'bus_id': bus_id[i], 'bus_name': bus_name, 'city': city[i],
+                'status': status[i], 'bus_id': bus_id[i], 'bus_name': bus_name[i], 'city': city[i],
                 'authorized': authorized[i], 'credit': credit[i], 'profit': profit[i],
                 'keep_profit': keep_profit[i], 'prices': prices[i]
             }

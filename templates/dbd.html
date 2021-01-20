@@ -30,6 +30,7 @@
                                             v-model="push_tax"
                                     >
                                         <v-btn
+                                                :loading="spinTable"
                                                 x-small
                                                 slot="append"
                                                 color="green"
@@ -51,7 +52,6 @@
                                             required
                                             v-model="formElement.fname"
                                     ></v-text-field>
-
                                     <v-text-field
                                             dense
                                             outlined
@@ -68,6 +68,69 @@
                                             label="สถานะ"
                                             required
                                             v-model="formElement.status"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="รหัสประเภทธรุกิจ"
+                                            required
+                                            v-model="formElement.bus_id"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="ชื่อประเภทธรุกิจ"
+                                            required
+                                            v-model="formElement.bus_name"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="จังหวัด"
+                                            required
+                                            v-model="formElement.city"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="ทุนจดทะเบียน(บาท)"
+                                            required
+                                            v-model="formElement.authorized"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="รายได้รวม(บาท)"
+                                            required
+                                            v-model="formElement.credit"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="กำไร(ขาดทุน)สุทธิ(บาท)"
+                                            required
+                                            v-model="formElement.profit"
+                                    ></v-text-field>
+
+                                    <v-text-field
+                                            dense
+                                            outlined
+                                            clearable
+                                            label="สินทรัพย์รวม(บาท)"
+                                            required
+                                            v-model="formElement.keep_profit"
                                     ></v-text-field>
 
 
@@ -107,7 +170,15 @@
                     formElement: {
                         fname: '',
                         type_person: '',
-                        status: ''
+                        status: '',
+                        bus_id: '',
+                        bus_name: '',
+                        city: '',
+                        authorized: '',
+                        credit: '',
+                        profit: '',
+                        keep_profit: '',
+                        prices: ''
                     },
                     valid: false,
                     dialog: true,
@@ -120,6 +191,7 @@
             methods: {
                 creatTable(data) {
                     this.dialog = false;
+                    this.spinButton = false;
                     const path = '/data_dbd';
                     axios.post(path, data)
                         .then((res) => {
@@ -128,8 +200,15 @@
                                 this.formElement.fname = data.fname;
                                 this.formElement.type_person = data.type_person;
                                 this.formElement.status = data.status;
+                                this.formElement.bus_id = data.bus_id;
+                                this.formElement.bus_name = data.bus_name;
+                                this.formElement.city = data.city;
+                                this.formElement.authorized = data.authorized;
+                                this.formElement.credit = data.credit;
+                                this.formElement.profit = data.profit;
+                                this.formElement.keep_profit = data.keep_profit;
+                                this.formElement.prices = data.prices;
                             })
-                            this.spinButton = false;
                             this.hiddenTable = true;
                             console.log(this.dbd);
                         })
