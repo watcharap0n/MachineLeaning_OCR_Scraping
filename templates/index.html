@@ -72,24 +72,28 @@
                                                 required
                                         ></v-text-field>
 
-                                        <v-textarea
-                                                dense
-                                                outlined
-                                                clearable
-                                                v-model="form.list_1, form.list_2"
-                                                label="List"
-                                                required
-                                        ></v-textarea>
-
-                                        <v-textarea
-                                                dense
-                                                outlined
-                                                clearable
-                                                v-model="form.pro_1, form.pro_2, form.pro_3"
-                                                label="Promotion"
-                                                required
-                                        ></v-textarea>
-
+                                        <v-row>
+                                            <v-col cols="6">
+                                                <v-textarea
+                                                        dense
+                                                        outlined
+                                                        clearable
+                                                        v-model="form.list_1"
+                                                        label="List"
+                                                        required
+                                                ></v-textarea>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-textarea
+                                                        dense
+                                                        outlined
+                                                        clearable
+                                                        v-model="form.pro_1"
+                                                        label="Promotion"
+                                                        required
+                                                ></v-textarea>
+                                            </v-col>
+                                        </v-row>
                                         <v-text-field
                                                 dense
                                                 outlined

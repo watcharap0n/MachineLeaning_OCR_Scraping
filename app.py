@@ -5,6 +5,7 @@ import os
 import requests
 from collections import OrderedDict
 import pyrebase
+from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
 from random import randrange
 from linebot.exceptions import LineBotApiError, InvalidSignatureError
@@ -164,9 +165,6 @@ def handle_message(event):
         line_bot_api.push_message(userId, TextMessage(text=url))
 
 
-form_ocr = []
-
-
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
@@ -219,21 +217,18 @@ def index():
         merged['price_2'] = merged.pop(34)
         merged['credit'] = merged.pop(35)
         merged['credit_price'] = merged.pop(36)
+        print(merged)
         group = {
             'company': ''.join(merged['company']), 'tax_id': ''.join(merged['tax_id']),
-            'pos_id': ''.join(merged['pos_id']), 'date': ''.join(merged['date']), 'list_1': ''.join(merged['list_1']),
-            'list_2': ''.join(merged['list_2']), 'total_each': ''.join(merged['total_each']),
-            'pro_1': ''.join(merged['pro_1']), 'pro_2': ''.join(merged['pro_2']), 'pro_3': ''.join(merged['pro_3']),
-            'price_1': ''.join(merged['price_1']), 'price_2': ''.join(merged['price_2']), 'credit': ''.join(merged['credit']),
-            'credit_price': ''.join(merged['credit_price'])
-        }
+            'pos_id': ''.join(merged['pos_id']), 'date': ''.join(merged['date']),
+            'list_1': ''.join(merged['list_1']) + '\n' + ''.join(merged['list_2']) + '\n' + ''.join(
+                merged[25]) + ''.join(merged[26]), 'total_each': ''.join(merged['total_each']),
+            'pro_1': ''.join(merged['pro_1']) + '  {}'.format(''.join(merged['price_1'])) + '\n' + ''.join(
+                merged['pro_2']) + '\n' ''.join(merged['pro_3']) + '  '.join(merged['price_2']),
+            'pro_2': ''.join(merged['pro_2']), 'pro_3': ''.join(merged['pro_3']), 'price_1': ''.join(merged['price_1']),
+            'price_2': ''.join(merged['price_2']), 'credit': ''.join(merged['credit']),
+            'credit_price': ''.join(merged['credit_price'])}
         return jsonify({'form': group, 'texts': texts[0]})
-
-
-@app.route('/formOCR')
-def formOCR():
-    print(form_ocr)
-    return render_template('form.html', data=form_ocr)
 
 
 @app.route('/ministry')
@@ -298,51 +293,64 @@ def dbd():
 @app.route('/data_dbd', methods=['GET', 'POST'])
 def data_dbd():
     if request.method == 'POST':
-        lst = []
-        req = request.get_json()
-        rpa = WebScraping('config/msedgedriver.exe')
-        tax_id = req['push_tax']
-        url = 'https://datawarehouse.dbd.go.th/'
-        content = rpa.table_index(tax_id=tax_id, url=url)
-        dfs = pd.read_html(str(content))
-        dataframe = pd.DataFrame(dfs[0])
-        dbd = dataframe.to_dict()
-        dbd['index'] = dbd.pop('ลำดับ')
-        dbd['tax_id'] = dbd.pop('เลขทะเบียนนิติบุคคล')
-        dbd['fname'] = dbd.pop('ชื่อนิติบุคคล')
-        dbd['type_person'] = dbd.pop('ประเภทนิติบุคคล')
-        dbd['status'] = dbd.pop('สถานะ')
-        dbd['bus_id'] = dbd.pop('รหัสประเภทธุรกิจ')
-        dbd['bus_name'] = dbd.pop('ชื่อประเภทธุรกิจ')
-        dbd['city'] = dbd.pop('จังหวัด')
-        dbd['authorized'] = dbd.pop('ทุนจดทะเบียน (บาท)')
-        dbd['credit'] = dbd.pop('รายได้รวม (บาท)')
-        dbd['profit'] = dbd.pop("กำไร (ขาดทุน) สุทธิ (บาท)")
-        dbd['keep_profit'] = dbd.pop('สินทรัพย์รวม (บาท)')
-        dbd['prices'] = dbd.pop('ส่วนของผู้ถือหุ้น (บาท)')
-        index = dbd['index']
-        tax_id = dbd['tax_id']
-        fname = dbd['fname']
-        type_person = dbd['type_person']
-        status = dbd['status']
-        bus_id = dbd['bus_id']
-        bus_name = dbd['bus_name']
-        city = dbd['city']
-        authorized = dbd['authorized']
-        credit = dbd['credit']
-        profit = dbd['profit']
-        keep_profit = dbd['keep_profit']
-        prices = dbd['prices']
-        len_index = len(index)
-        for i in range(0, len_index):
+        try:
+            lst = []
+            req = request.get_json()
+            rpa = WebScraping('config/msedgedriver.exe')
+            tax_id = req['push_tax']
+            url = 'https://datawarehouse.dbd.go.th/'
+            content = rpa.dbd_tax(tax_id, url)
+            dfs = pd.read_html(str(content))
+            dataframe = pd.DataFrame(dfs[0])
+            dbd = dataframe.to_dict()
+            dbd['index'] = dbd.pop('ลำดับ')
+            dbd['tax_id'] = dbd.pop('เลขทะเบียนนิติบุคคล')
+            dbd['fname'] = dbd.pop('ชื่อนิติบุคคล')
+            dbd['type_person'] = dbd.pop('ประเภทนิติบุคคล')
+            dbd['status'] = dbd.pop('สถานะ')
+            dbd['bus_id'] = dbd.pop('รหัสประเภทธุรกิจ')
+            dbd['bus_name'] = dbd.pop('ชื่อประเภทธุรกิจ')
+            dbd['city'] = dbd.pop('จังหวัด')
+            dbd['authorized'] = dbd.pop('ทุนจดทะเบียน (บาท)')
+            dbd['credit'] = dbd.pop('รายได้รวม (บาท)')
+            dbd['profit'] = dbd.pop("กำไร (ขาดทุน) สุทธิ (บาท)")
+            dbd['keep_profit'] = dbd.pop('สินทรัพย์รวม (บาท)')
+            dbd['prices'] = dbd.pop('ส่วนของผู้ถือหุ้น (บาท)')
+            index = dbd['index']
+            tax_id = dbd['tax_id']
+            fname = dbd['fname']
+            type_person = dbd['type_person']
+            status = dbd['status']
+            bus_id = dbd['bus_id']
+            bus_name = dbd['bus_name']
+            city = dbd['city']
+            authorized = dbd['authorized']
+            credit = dbd['credit']
+            profit = dbd['profit']
+            keep_profit = dbd['keep_profit']
+            prices = dbd['prices']
+            len_index = len(index)
+            for i in range(0, len_index):
+                group = {
+                    'index': index[i], 'tax_id': tax_id[i], 'fname': fname[i], 'type_person': type_person[i],
+                    'status': status[i], 'bus_id': bus_id[i], 'bus_name': bus_name[i], 'city': city[i],
+                    'authorized': authorized[i], 'credit': credit[i], 'profit': profit[i],
+                    'keep_profit': keep_profit[i], 'prices': prices[i]
+                }
+                lst.append(group)
+            return jsonify({'dbd': lst})
+        except NoSuchElementException:
+            lst = []
             group = {
-                'index': index[i], 'tax_id': tax_id[i], 'fname': fname[i], 'type_person': type_person[i],
-                'status': status[i], 'bus_id': bus_id[i], 'bus_name': bus_name[i], 'city': city[i],
-                'authorized': authorized[i], 'credit': credit[i], 'profit': profit[i],
-                'keep_profit': keep_profit[i], 'prices': prices[i]
+                'index': 'Please try again...', 'tax_id': 'Please try again...', 'fname': 'Please try again...',
+                'type_person': 'Please try again...',
+                'status': 'Please try again...', 'bus_id': 'Please try again...', 'bus_name': 'Please try again...',
+                'city': 'Please try again...',
+                'authorized': 'Please try again...', 'credit': 'Please try again...', 'profit': 'Please try again...',
+                'keep_profit': 'Please try again...', 'prices': 'Please try again...'
             }
             lst.append(group)
-        return jsonify({'dbd': lst})
+            return jsonify({'dbd': lst})
 
 
 if __name__ == '__main__':

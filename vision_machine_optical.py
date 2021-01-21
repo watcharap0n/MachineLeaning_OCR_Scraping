@@ -138,7 +138,6 @@ class VisionOCR:
         cv2.waitKey(3)
         return text_classifier
 
-
 def edu_resize(image):
     img = cv2.imread(image)
     img_resize = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
@@ -200,73 +199,3 @@ def rectangle_document(path):
     cv2.imshow('img', image)
     cv2.waitKey(0)
     return ocr
-
-    # left, top = ocr['vertextX'][0]
-    # right, bottom = ocr['vertextY'][0]
-    # width, height = 250, 350
-    # print(ocr['vertextX'][0], ocr['vertextY'][0])
-    # pts1 = np.float32([[top, left], [bottom, height], [right, width], [bottom, right]])
-    # pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
-    # matrix = cv2.getPerspectiveTransform(pts1, pts2)
-    # imgOutput = cv2.warpPerspective(image, matrix, (width, height))
-    # cv2.imshow('output', imgOutput)
-
-
-
-
-# ocr = VisionOCR('static/images/test.png')
-# ocr = ocr.document_pandas()
-# ocr = ocr.to_dict()
-# texts = ocr['description']
-# xy = ocr['vertextX']
-# wh = ocr['vertextY']
-# range_text = len(texts)
-#
-# embedding = []
-# for i in range(range_text)[1:]:
-#     x, y = xy[i]
-#     embedding.append(y)
-#
-# cut_y = list(OrderedDict.fromkeys(embedding).keys())
-# results = []
-# count = 1
-# for i in range(range_text)[1:]:
-#     x, y = xy[i]
-#     w, h = wh[i]
-#     text = texts[i]
-#     for e, idx in enumerate(cut_y):
-#         if idx == y:
-#             dic = {e: text}
-#             results.append(dic)
-#
-# len_results = len(results)
-# vals = []
-# for i in results:
-#     if i:
-#         vals.append(i)
-#
-#
-# merged = {}
-# for k, d in enumerate(vals):
-#     for j, v in d.items():
-#         if j not in merged:
-#             merged[j] = []
-#         merged[j].append(v)
-#
-# merged['company'] = merged.pop(0)
-# merged['tax_id'] = merged.pop(10)
-# merged['pos_id'] = merged.pop(13)
-# merged['date'] = merged.pop(15)
-# merged['list_1'] = merged.pop(21)
-# merged['list_2'] = merged.pop(23)
-# merged['total_each'] = merged.pop(29)
-# merged['pro_1'] = merged.pop(30)
-# merged['pro_2'] = merged.pop(31)
-# merged['pro_3'] = merged.pop(32)
-# merged['price_1'] = merged.pop(33)
-# merged['price_2'] = merged.pop(34)
-# merged['credit'] = merged.pop(35)
-# merged['credit_price'] = merged.pop(36)
-#
-# print(merged)
-# print(texts[0])

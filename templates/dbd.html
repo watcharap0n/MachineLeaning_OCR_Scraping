@@ -30,7 +30,7 @@
                                             v-model="push_tax"
                                     >
                                         <v-btn
-                                                :loading="spinTable"
+                                                :loading="!spinButton"
                                                 x-small
                                                 slot="append"
                                                 color="green"
@@ -185,36 +185,47 @@
                     push_tax: '',
                     spinButton: true,
                     hiddenTable: false,
-                    dbd: [],
+                    dbd: {},
                 }
             },
+            watch: {
+                dbd: 'showData'
+            },
             methods: {
+                showData() {
+                    if (this.dbd) {
+                        this.spinButton = true
+                    }
+                },
                 creatTable(data) {
-                    this.dialog = false;
-                    this.spinButton = false;
-                    const path = '/data_dbd';
-                    axios.post(path, data)
-                        .then((res) => {
-                            let dbd = res.data.dbd;
-                            dbd.forEach(data => {
-                                this.formElement.fname = data.fname;
-                                this.formElement.type_person = data.type_person;
-                                this.formElement.status = data.status;
-                                this.formElement.bus_id = data.bus_id;
-                                this.formElement.bus_name = data.bus_name;
-                                this.formElement.city = data.city;
-                                this.formElement.authorized = data.authorized;
-                                this.formElement.credit = data.credit;
-                                this.formElement.profit = data.profit;
-                                this.formElement.keep_profit = data.keep_profit;
-                                this.formElement.prices = data.prices;
+                    if (this.push_tax) {
+                        this.dialog = false;
+                        this.spinButton = false;
+                        const path = '/data_dbd';
+                        axios.post(path, data)
+                            .then((res) => {
+                                let dbd = res.data.dbd;
+                                this.dbd = dbd
+                                dbd.forEach(data => {
+                                    this.formElement.fname = data.fname;
+                                    this.formElement.type_person = data.type_person;
+                                    this.formElement.status = data.status;
+                                    this.formElement.bus_id = data.bus_id;
+                                    this.formElement.bus_name = data.bus_name;
+                                    this.formElement.city = data.city;
+                                    this.formElement.authorized = data.authorized;
+                                    this.formElement.credit = data.credit;
+                                    this.formElement.profit = data.profit;
+                                    this.formElement.keep_profit = data.keep_profit;
+                                    this.formElement.prices = data.prices;
+                                })
+                                this.hiddenTable = true;
+                                console.log(this.dbd);
                             })
-                            this.hiddenTable = true;
-                            console.log(this.dbd);
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        })
+                            .catch((err) => {
+                                console.error(err);
+                            })
+                    }
                 },
             },
             delimiters: ["[[", "]]"]
