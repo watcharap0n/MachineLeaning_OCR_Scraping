@@ -168,7 +168,7 @@ def handle_message(event):
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('index.vue')
     elif request.method == 'POST':
         file_input = request.files['file']
         print(file_input)
@@ -233,7 +233,7 @@ def index():
 
 @app.route('/ministry')
 def ministry():
-    return render_template('ministry.html')
+    return render_template('ministry.vue')
 
 
 @app.route('/data_ministry', methods=['POST'])
@@ -256,7 +256,7 @@ def data_ministry():
 
 @app.route('/bitkub')
 def bitkub():
-    return render_template('bitkub.html')
+    return render_template('bitkub.vue')
 
 
 @app.route('/data_bitkub')
@@ -287,7 +287,7 @@ def data_bitkub():
 
 @app.route('/dbd')
 def dbd():
-    return render_template('dbd.html')
+    return render_template('dbd.vue')
 
 
 @app.route('/data_dbd', methods=['GET', 'POST'])
