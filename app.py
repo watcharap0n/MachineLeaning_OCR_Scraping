@@ -246,12 +246,7 @@ def data_ministry():
     url = f"https://dataapi.moc.go.th/products?keyword={keyword}&revision={revision}&imex_type={imex_type}&order_by={order_by}"
     response = requests.get(url, verify=False)
     texts = response.json()
-    lst = []
-    for i in texts:
-        group = {'com_code': i['com_code'], 'hs_description_th': i['hs_description_th'],
-                 'com_description_th': i['com_description_th']}
-        lst.append(group)
-    return jsonify({'ministry': lst})
+    return jsonify(texts)
 
 
 @app.route('/bitkub')
