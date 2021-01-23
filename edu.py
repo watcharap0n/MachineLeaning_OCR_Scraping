@@ -121,7 +121,7 @@ def transform_document_mango():
 
 
 def titanic_imp():
-    f = pd.read_csv('titanic_data.csv')
+    f = pd.read_csv('instance/titanic_data.csv')
     origin_age = f['Age'].isnull()
     age = f['Age'].values
     age = np.reshape(age, (-1, 1))

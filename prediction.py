@@ -125,6 +125,3 @@ def dlib_video(select):
         cv2.imshow('image', image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-
-
