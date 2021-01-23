@@ -80,3 +80,21 @@ def threshold():
             break
 
 
+cap = cv2.VideoCapture('model_image/mindset.mp4')
+while True:
+    ret, image = cap.read()
+    scale = 0.5
+    image = cv2.resize(image, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+    gray_scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    dets = detector(gray_scale, 1)
+    print(dets)
+    for k, rect in enumerate(dets):
+        shape = sp(image, rect)
+        shape = face_utils.shape_to_np(shape)
+        cv2.rectangle(image, (rect.left(), rect.top()), (rect.right(), rect.bottom()), (0, 0, 255), 3)
+        for (x, y) in shape:
+            cv2.circle(image, (x, y), 2, (0, 255, 0), -1)
+
+    cv2.imshow('shape 68', image)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
