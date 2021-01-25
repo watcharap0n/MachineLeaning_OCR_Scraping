@@ -1,16 +1,11 @@
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn import svm
-from attacut import tokenize
 import cv2
 from vision_machine_optical import VisionOCR
 import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import StandardScaler
 
 
 def edu_resize(image):
@@ -136,22 +131,3 @@ def titanic_imp():
     y_pred = lr.predict(x_test)
     print(accuracy_score(y_pred, y_test))
 
-
-# count_vect = CountVectorizer(tokenizer=tokenize)
-# x_train_count = count_vect.fit_transform(x_train)
-# tf_transformer = TfidfTransformer(use_idf=False)
-# tf_transformer.fit(x_train_count)
-#
-# x_train_tfidf = tf_transformer.transform(x_train_count)
-# clf = svm.SVC(C=1.0, kernel='linear', degree=3,
-#               gamma='auto', probability=True)
-# svm_predict = clf.fit(x_train_tfidf, answers)
-#
-#
-# Xtest_count = count_vect.transform(msg)
-# Xtest_tf = tf_transformer.transform(Xtest_count)
-# label = SVM.predict(Xtest_tf)
-# prop = SVM.predict_proba(Xtest_tf)[0][label]
-# confidence = (0.3565152559 / ((len(embedding) * float(prop)) ** 0.5)) ** 2
-# print(label)
-# return confidence, idx_answer, label, msg, userId
