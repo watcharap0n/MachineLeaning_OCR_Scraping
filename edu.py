@@ -93,12 +93,12 @@ def transform_image():
     cv2.waitKey(0)
 
 
-def transform_document_mango():
-    ocr = VisionOCR('static/images/paper.jpeg')
+def transform_document_mango(file_path):
+    ocr = VisionOCR(file_path)
     dfs = ocr.document_pandas()
     dict_image = dfs.to_dict()
     idx_image = len(dict_image['vertextX'])
-    image = cv2.imread('static/images/paper.jpeg')
+    image = cv2.imread(filename=file_path)
     x, y = dict_image['vertextX'][0]
     w, h = dict_image['vertextY'][0]
     x1, y1 = dict_image['vertextX1'][0]
@@ -108,13 +108,13 @@ def transform_document_mango():
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     transform = cv2.warpPerspective(image, matrix, (width, height))
+    print(dict_image['description'][0])
     for i in range(idx_image)[1:]:
         x, y = dict_image['vertextX'][i]
         w, h = dict_image['vertextY'][i]
         x1, y1 = dict_image['vertextX1'][i]
         w1, h1 = dict_image['vertextY1'][i]
-        print((x, y), (w, h), (x1, y1), (w1, h1))
-        cv2.rectangle(image, (x, y), (w, h), (0, 255, 0), 3)
+        cv2.rectangle(image, (x, y), (w, h), (0, 255, 0), 1)
     cv2.imshow('origin', image)
     cv2.imshow('image', transform)
     cv2.waitKey(0)
@@ -137,21 +137,7 @@ def titanic_imp():
     print(accuracy_score(y_pred, y_test))
 
 
-# count_vect = CountVectorizer(tokenizer=tokenize)
-# x_train_count = count_vect.fit_transform(x_train)
-# tf_transformer = TfidfTransformer(use_idf=False)
-# tf_transformer.fit(x_train_count)
-#
-# x_train_tfidf = tf_transformer.transform(x_train_count)
-# clf = svm.SVC(C=1.0, kernel='linear', degree=3,
-#               gamma='auto', probability=True)
-# svm_predict = clf.fit(x_train_tfidf, answers)
-#
-#
-# Xtest_count = count_vect.transform(msg)
-# Xtest_tf = tf_transformer.transform(Xtest_count)
-# label = SVM.predict(Xtest_tf)
-# prop = SVM.predict_proba(Xtest_tf)[0][label]
-# confidence = (0.3565152559 / ((len(embedding) * float(prop)) ** 0.5)) ** 2
-# print(label)
-# return confidence, idx_answer, label, msg, userId
+
+
+
+
