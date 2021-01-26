@@ -1,6 +1,3 @@
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn import svm
-from attacut import tokenize
 import cv2
 from vision_machine_optical import VisionOCR
 import numpy as np
@@ -9,8 +6,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
 
 
 def edu_resize(image):
@@ -135,9 +130,3 @@ def titanic_imp():
     lr.fit(x_train, y_train)
     y_pred = lr.predict(x_test)
     print(accuracy_score(y_pred, y_test))
-
-
-
-
-
-

@@ -1,19 +1,9 @@
 from fastapi import FastAPI, Header, Cookie, Form, Request, requests, Body
 from fastapi.templating import Jinja2Templates
 import uvicorn
-from pydantic import BaseModel
-from typing import Optional
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates/')
-
-
-class Item(BaseModel):
-    name: str
-    description: Optional[str] = None
-    price: float
-    tax: Optional[float] = None
-
 
 data_query = {
     'titanic': 'jack',
