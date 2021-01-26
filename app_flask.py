@@ -12,14 +12,14 @@ payload = {
             'city': 'bangkok'
         },
         {
-            'firstname': 'thiphaporn',
-            'lastname': 'raktuam',
+            'firstname': 'somsak',
+            'lastname': 'tamjai',
             'age': '22',
             'city': 'bangkok'
         },
         {
-            'firstname': 'prayut',
-            'lastname': 'chanocha',
+            'firstname': 'rakkana',
+            'lastname': 'meejai',
             'age': '66',
             'city': 'outcast'
         },
@@ -27,13 +27,6 @@ payload = {
 }
 
 
-@app.route('/api/param')
-def api_param():
-    req = request.args.get('data')
-    if req:
-        print(req)
-        return jsonify({'message': payload[req]})
-    return jsonify({'message': payload})
 
 
 if __name__ == '__main__':

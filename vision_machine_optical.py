@@ -138,3 +138,4 @@ class VisionOCR:
         cv2.imshow('img', img)
         cv2.waitKey(3)
         return text_classifier
+
