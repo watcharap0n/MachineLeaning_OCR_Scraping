@@ -55,8 +55,8 @@ async def api_body(item_id: str):
 
 
 @app.post('/payload_request')
-async def payload_request(r: Request):
-    return await r.json()
+async def payload_request(request: Request):
+    return await request.json()
 
 
 @app.post("/payload_json")
@@ -65,10 +65,9 @@ async def create_item(payload: dict = Body(...)):
     return payload
 
 
-@app.get('/index', response_class=HTMLResponse)
+@app.get('/index')
 def index(request: Request):
-    text = 'hello python'
-    return templates.TemplateResponse('template_fastapi/index.html', context={'request': request, 'data': text})
+    return templates.TemplateResponse('template_fastapi/index.html', context={'request': request})
 
 
 if __name__ == '__main__':
