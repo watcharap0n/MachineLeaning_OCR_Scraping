@@ -1,26 +1,46 @@
 from fastapi import FastAPI, Header, Cookie, Form, Request, requests, Body
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 
 app = FastAPI()
-templates = Jinja2Templates(directory='templates/')
+app.mount('/static', StaticFiles(directory='static'), name='static')
+templates = Jinja2Templates(directory='templates')
 
-data_query = {
-    'titanic': 'jack',
-    'tenet': 'star',
-    'hello': 'world',
-    'world': 'people'
+payloads = {
+    'peoples': [
+        {
+            'firstname': 'watcharapon',
+            'lastname': 'weeraborirak',
+            'age': '24',
+            'city': 'bangkok'
+        },
+        {
+            'firstname': 'somsak',
+            'lastname': 'tamjai',
+            'age': '22',
+            'city': 'bangkok'
+        },
+        {
+            'firstname': 'rakkana',
+            'lastname': 'meejai',
+            'age': '66',
+            'city': 'outcast'
+        },
+    ]
 }
 
 
-@app.get('/movies')
+@app.get('/peoples')
 async def fetch_movies(query: str = None):  # query param string
-    return {'message': data_query[query]}
+    payload = [p[query] for p in payloads['peoples']]
+    return payload
 
 
 @app.get('/member')
-async def member(x_user: str = Header(...)):  # Header
-    return {'message': f'It is Header your put {x_user}'}
+async def member(NewHeader: str = Header(...)):  # Header
+    return {'message': f'It is Header your put {NewHeader}'}
 
 
 @app.get('/member/token')
@@ -45,9 +65,10 @@ async def create_item(payload: dict = Body(...)):
     return payload
 
 
-@app.get('/form')
-def form(r: Request):
-    return templates.TemplateResponse('form.html', context={'request': r})
+@app.get('/index', response_class=HTMLResponse)
+def index(request: Request):
+    text = 'hello python'
+    return templates.TemplateResponse('template_fastapi/index.html', context={'request': request, 'data': text})
 
 
 if __name__ == '__main__':
