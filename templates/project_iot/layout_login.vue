@@ -5,7 +5,7 @@
     <title>login</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <link rel="icon" href="/static/images/41019220.jpg" type="image/png" sizes="16x16">
+    <link rel="icon" href="/static/images/4100.jpg" type="image/png" sizes="16x16">
     <!--    <link rel="stylesheet" href="css/custom.css">-->
     <meta name="description" content=""/>
     <meta name="author" content=""/>
