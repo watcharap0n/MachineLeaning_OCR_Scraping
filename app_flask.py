@@ -27,6 +27,9 @@ payload = {
 }
 
 
+@app.route('/api/payload')
+def api_payload():
+    return jsonify({'message': payload})
 
 
 if __name__ == '__main__':
