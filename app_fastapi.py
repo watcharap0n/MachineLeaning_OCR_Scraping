@@ -8,29 +8,6 @@ from fastapi.routing import APIRoute
 from pydantic import BaseModel
 import uvicorn
 
-payloads = {
-    'peoples': [
-        {
-            'firstname': 'watcharapon',
-            'lastname': 'weeraborirak',
-            'age': '24',
-            'city': 'bangkok'
-        },
-        {
-            'firstname': 'somsak',
-            'lastname': 'tamjai',
-            'age': '22',
-            'city': 'bangkok'
-        },
-        {
-            'firstname': 'rakkana',
-            'lastname': 'meejai',
-            'age': '66',
-            'city': 'outcast'
-        },
-    ]
-}
-
 
 class Login(BaseModel):
     username: str
@@ -59,27 +36,33 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
 
 
-@app.get('/')
-@app.get('/index')
+@app.get('/index', tags=['Page'])
 async def index(request: Request):
     return templates.TemplateResponse('template_fastapi/index.vue', context={'request': request})
 
 
-@app.get('/login')
-async def login(request: Request):
-    return templates.TemplateResponse('template_fastapi/login.vue', context={'request': request})
-
-
-@app.post('/login')
-async def login_post(formElements: Login):
-    items = formElements.dict()
-    return items
-
-
-@app.get('/dashboard')
+@app.get('/dashboard', tags=['Page'])
 async def dashboard(request: Request):
     return templates.TemplateResponse('template_fastapi/dashboard.vue', context={'request': request})
 
 
+@app.get('/', summary='First Page')
+@app.get('/login', tags=['Page'], summary='Login', description='Page Login', response_model=Login)
+async def login(request: Request):
+    return templates.TemplateResponse('template_fastapi/login.vue', context={'request': request})
+
+
+@app.post('/login', tags=['Security'], response_model=Login)
+async def login_post(formElements: Login):
+    """
+    POST LOGIN
+    - **email**: your email here.
+    - **password**: your password here.
+    - **checkbox**: your remember
+    """
+    items = formElements.dict()
+    return items
+
+
 if __name__ == '__main__':
-    uvicorn.run('app_fastapi:app', debug=True, port=8080)
+    uvicorn.run('app_fastapi:app', debug=True, port=8888)
