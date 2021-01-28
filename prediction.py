@@ -14,7 +14,7 @@ model = dlib.face_recognition_model_v1('model_image/dlib_face_recognition_resnet
 
 def imshow_RGB():
     kernel = np.ones((5, 5), np.uint8)  # bit 8
-    img = cv2.imread('static/images/41019220.jpg')
+    img = cv2.imread('static/images/4100.jpg')
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur_img = cv2.GaussianBlur(gray_img, (9, 9), 0)
     threshold = cv2.Canny(img, 100, 100)

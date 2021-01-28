@@ -1,54 +1,68 @@
-from fastapi import FastAPI, Header, Cookie, Form, Request, requests, Body
+from fastapi import FastAPI, Header, Cookie, Form, Request, requests, Body, Response, HTTPException
+from fastapi.responses import HTMLResponse
+from typing import List, Callable, Optional
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.exceptions import RequestValidationError
+from fastapi.routing import APIRoute
+from pydantic import BaseModel
 import uvicorn
 
+
+class Login(BaseModel):
+    username: str
+    password: str
+    checkbox: list
+
+
+class ValidationError(APIRoute):
+    def get_route_handler(self) -> Callable:
+        original_route_handler = super().get_route_handler()
+
+        async def customer_route_handler(request: Request) -> Response:
+            try:
+                return await original_route_handler(request)
+            except RequestValidationError as exc:
+                body = await request.body()
+                detail = {'error': exc.errors(), 'body': body.decode()}
+                raise HTTPException(status_code=200, detail=detail)
+
+        return customer_route_handler
+
+
 app = FastAPI()
-templates = Jinja2Templates(directory='templates/')
-
-data_query = {
-    'titanic': 'jack',
-    'tenet': 'star',
-    'hello': 'world',
-    'world': 'people'
-}
+app.router.route_class = ValidationError
+app.mount('/static', StaticFiles(directory='static'), name='static')
+templates = Jinja2Templates(directory='templates')
 
 
-@app.get('/movies')
-async def fetch_movies(query: str = None):  # query param string
-    return {'message': data_query[query]}
+@app.get('/index', tags=['Page'])
+async def index(request: Request):
+    return templates.TemplateResponse('template_fastapi/index.vue', context={'request': request})
 
 
-@app.get('/member')
-async def member(x_user: str = Header(...)):  # Header
-    return {'message': f'It is Header your put {x_user}'}
+@app.get('/dashboard', tags=['Page'])
+async def dashboard(request: Request):
+    return templates.TemplateResponse('template_fastapi/dashboard.vue', context={'request': request})
 
 
-@app.get('/member/token')
-async def member_token(x_token: str = Cookie(None)):
-    print(x_token)
-    return {'message': f'success cookie {x_token}'}
+@app.get('/', summary='First Page')
+@app.get('/login', tags=['Page'], summary='Login', description='Page Login', response_model=Login)
+async def login(request: Request):
+    return templates.TemplateResponse('template_fastapi/login.vue', context={'request': request})
 
 
-@app.get('/api_body/{item_id}')  # dynamic route
-async def api_body(item_id: str):
-    return {'item_id': item_id}
-
-
-@app.post('/payload_request')
-async def payload_request(r: Request):
-    return await r.json()
-
-
-@app.post("/payload_json")
-async def create_item(payload: dict = Body(...)):
-    print(payload)
-    return payload
-
-
-@app.get('/form')
-def form(r: Request):
-    return templates.TemplateResponse('form.html', context={'request': r})
+@app.post('/login', tags=['Security'], response_model=Login)
+async def login_post(formElements: Login):
+    """
+    POST LOGIN
+    - **email**: your email here.
+    - **password**: your password here.
+    - **checkbox**: your remember
+    """
+    items = formElements.dict()
+    return items
 
 
 if __name__ == '__main__':
-    uvicorn.run('app_fastapi:app', debug=True, port=8080)
+    uvicorn.run('app_fastapi:app', debug=True, port=8888)

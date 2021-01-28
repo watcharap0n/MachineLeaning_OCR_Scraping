@@ -5,3 +5,4 @@ config/db_firebase.json
 config
 log.json
 ngrok.exe
+node_modules
