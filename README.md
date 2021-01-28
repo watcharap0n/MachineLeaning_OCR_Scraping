@@ -9,6 +9,7 @@ Computer Engineering AI Developer (Machine Learning)
 Main Point Success
 - scikit-learn
 - flask
+- FastAPI
 - pyrebase4
 - pymongo
 - chabot
