@@ -6,6 +6,7 @@ import time
 from imutils import face_utils
 from os import listdir
 
+
 face_rec = cv2.CascadeClassifier('model_image/haarcascade_frontalface_default.xml')
 detector = dlib.get_frontal_face_detector()
 sp = dlib.shape_predictor('model_image/shape_predictor_68_face_landmarks.dat')
