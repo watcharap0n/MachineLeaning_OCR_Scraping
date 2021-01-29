@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Header, Cookie, Form, Request, requests, Body, Response, HTTPException, status
+from fastapi import FastAPI, Header, Cookie, Form, Request, requests, Body, Response, HTTPException, status, Path, Query
 from fastapi.responses import HTMLResponse
+from typing import Optional
 from fastapi.testclient import TestClient
 from typing import List, Callable
 from fastapi.staticfiles import StaticFiles
@@ -89,6 +90,17 @@ async def item_id(item_id: int, item: Item):
     return {'item_id': item_id, **item.dict()}
 
 
+@app.get("/items_id/{item_id}")
+async def read_items(
+        item_id: int = Path(..., title="The ID of the item to get"),
+        q: Optional[str] = Query(None, alias="item-query")
+):
+    results = {"item_id": item_id}
+    if q:
+        results.update({"q": q})
+    return results
+
+
 @app.get('/peoples')
 async def fetch_movies(query: str = None):  # query param string
     payload = [p[query] for p in payloads['peoples']]
@@ -97,6 +109,7 @@ async def fetch_movies(query: str = None):  # query param string
 
 @app.get('/member')
 async def member(item: Item, X_Item_ID: str = Header(...)):  # Header
+    print(X_Item_ID)
     if X_Item_ID != 'member':
         raise HTTPException(status_code=400, detail="X-Item-ID header invalid")
     return JSONResponse(content={item.name: 'kane', item.price: 123.33})
