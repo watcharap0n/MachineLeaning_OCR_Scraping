@@ -35,6 +35,7 @@ class Recognition(ModelImage):
                     d.append(np.linalg.norm(np.array(face_desc) - np.array(face_desc_first)))
                 d = np.array(d)
                 idx = np.argmin(d)
+                print(d[idx])
                 if d[idx] <= 0.45:
                     name = self.FACE_NAME[idx]
                     name = str(name)
@@ -55,3 +56,5 @@ class Recognition(ModelImage):
                 break
 
 
+face = Recognition(0)
+face.face_recognition_DLIB()

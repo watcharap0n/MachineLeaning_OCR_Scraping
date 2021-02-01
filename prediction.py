@@ -100,7 +100,7 @@ def dlib_image(file_image):
         cv2.rectangle(image, (x, y), (w, h), (0, 255, 0), 3)
         for (x, y) in shape:
             cv2.circle(image, (x, y), 2, (0, 0, 255), -1)
-
+    cv2.imwrite('instance/image_people.jpg', image)
     cv2.imshow('image', image)
     cv2.waitKey(0)
 
@@ -123,6 +123,8 @@ def dlib_video(select):
             cv2.imwrite('face_dets.png', write_image)
             for (x, y) in shape:
                 cv2.circle(image, (x, y), 2, (0, 0, 255), -1)
+        cv2.imwrite('instance/image_people.jpg', image)
         cv2.imshow('image', image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+

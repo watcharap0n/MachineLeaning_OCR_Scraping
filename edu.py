@@ -110,6 +110,7 @@ def transform_document_mango(file_path):
         x1, y1 = dict_image['vertextX1'][i]
         w1, h1 = dict_image['vertextY1'][i]
         cv2.rectangle(image, (x, y), (w, h), (0, 255, 0), 1)
+
     cv2.imshow('origin', image)
     cv2.imshow('image', transform)
     cv2.waitKey(0)
@@ -131,3 +132,5 @@ def titanic_imp():
     y_pred = lr.predict(x_test)
     print(accuracy_score(y_pred, y_test))
 
+
+transform_document_mango('instance/uploads/tot2.PNG')

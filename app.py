@@ -15,7 +15,7 @@ from vision_machine_optical import VisionOCR
 
 app = Flask(__name__)
 
-with open('config/db_firebase.json', encoding='utf8') as config_file:
+with open('config/firebase.json', encoding='utf8') as config_file:
     data = json.load(config_file)
     config = data['firebase']
     firebase = pyrebase.initialize_app(config)
@@ -291,7 +291,7 @@ def data_dbd():
         try:
             lst = []
             req = request.get_json()
-            rpa = WebScraping('config/msedgedriver.exe')
+            rpa = WebScraping('config/chromedriver')
             tax_id = req['push_tax']
             url = 'https://datawarehouse.dbd.go.th/'
             content = rpa.dbd_tax(tax_id, url)
