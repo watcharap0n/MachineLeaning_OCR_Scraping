@@ -130,3 +130,4 @@ def titanic_imp():
     lr.fit(x_train, y_train)
     y_pred = lr.predict(x_test)
     print(accuracy_score(y_pred, y_test))
+

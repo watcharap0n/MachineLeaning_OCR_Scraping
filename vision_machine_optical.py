@@ -10,7 +10,7 @@ import cv2
 from matplotlib import pyplot as plt
 from matplotlib import patches as pch
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'config/config_ocr.json'
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'config/config_ocr.json'
 
 
 class VisionOCR:
