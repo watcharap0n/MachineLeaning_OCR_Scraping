@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 import os
 
 app = Flask(__name__)
@@ -89,6 +89,25 @@ def api_form_file():
     uploads_dir = os.path.join(app.instance_path, 'image_upload')
     file.save(os.path.join(uploads_dir, file.filename))
     return jsonify({'message': 'success'})
+
+
+@app.route('/api/form_list', methods=['POST'])
+def form_list():
+    username = request.form.getlist('username')
+    return jsonify({'msg': username})
+
+
+@app.route('/api/to_dict', methods=['POST'])
+def form_to_dict():
+    to_dict = request.form.to_dict()
+    return jsonify(to_dict)
+
+
+@app.route('/api/cookies')
+def api_cookies():
+    response = make_response('cookies is successfully')
+    response.set_cookie('remember_me', 'kane', max_age=60 * 60 * 24 * 365 * 5)
+    return response
 
 
 if __name__ == '__main__':
