@@ -2,10 +2,10 @@ import cv2
 from vision_machine_optical import VisionOCR
 import numpy as np
 import pandas as pd
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
+from sklearn_edu.impute import SimpleImputer
+from sklearn_edu.model_selection import train_test_split
+from sklearn_edu.neighbors import KNeighborsClassifier
+from sklearn_edu.metrics import accuracy_score
 
 
 def edu_resize(image):

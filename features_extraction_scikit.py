@@ -3,6 +3,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn import tree
+from sklearn import datasets
 import numpy as np
 
 
@@ -35,7 +36,7 @@ class FeatureIris:
         result = accuracy_score(acc, predictions)
         return predictions, result
 
-    def iris_train_knn(self, data_test, acc):
+    def iris_train_knn(self, data_test):
         iris = self.dataset
         x = iris.data
         y = iris.target
@@ -45,5 +46,7 @@ class FeatureIris:
         idx = data_test
         test_data = np.array([idx])
         predictions = my_classifier.predict(test_data)
-        result = accuracy_score(acc, predictions)
+        result = accuracy_score(y_test, predictions)
         return predictions, result
+
+

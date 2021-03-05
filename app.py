@@ -171,7 +171,6 @@ def index():
         return render_template('index.vue')
     elif request.method == 'POST':
         file_input = request.files['file']
-        print(file_input)
         uploads_dir = os.path.join(app.instance_path, 'uploads')
         file_input.save(os.path.join(uploads_dir, file_input.filename))
         ocr = VisionOCR(f'instance/uploads/{file_input.filename}')
@@ -346,6 +345,21 @@ def data_dbd():
             }
             lst.append(group)
             return jsonify({'dbd': lst})
+
+
+@app.route('/ocr', methods=['GET', 'POST'])
+def ocr():
+    if request.method == 'GET':
+        return render_template('ocr.vue')
+    elif request.method == 'POST':
+        file_input = request.files['file']
+        uploads_dir = os.path.join(app.instance_path, 'uploads')
+        file_input.save(os.path.join(uploads_dir, file_input.filename))
+        ocr = VisionOCR(f'instance/uploads/{file_input.filename}')
+        ocr = ocr.document_pandas()
+        ocr = ocr.to_dict()
+        texts = ocr['description']
+        return jsonify({'texts': texts[0]})
 
 
 if __name__ == '__main__':
