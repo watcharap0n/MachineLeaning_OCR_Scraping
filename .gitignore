@@ -6,3 +6,4 @@ config
 log.json
 ngrok.exe
 node_modules
+__pycache__
